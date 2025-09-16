@@ -24,6 +24,16 @@ if (response == CorrectAnswer) {
     alert("incorrect!");
 }
 
+let age = prompt('How old are you?');
+if (age < 12) {
+    alert('Child');
+}
+if (age >= 12 && age < 30) {
+    alert('Teenager');
+}
+if (age >= 30) {
+    alert("Adult");
+}
 
 
 
