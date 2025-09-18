@@ -10,19 +10,25 @@ num10uput.innerHTML = randomNum1
 num20uput.innerHTML = randomNum2
 //update elements on the page
 
-// rewriting code so that the two numbers are randomly generated
+//Random number
+let start = Date.now();
 let num1 = Math.floor(Math.random() * 100) + 1;
 let num2 = Math.floor(Math.random() * 100) + 1;
-
 let response = prompt(`What is  ${num1}  +  ${num2}  ?`);
+let end = Date.now();
+let TimetoRespond = (end - start) / 1000;
 let CorrectAnswer = num1 + num2
 
 if (response == CorrectAnswer) {
-    alert("Correct!");
-
+    alert("You answered " + response + " in " + TimetoRespond + " seconds. Your Response was CORRECT");
 } else if (response != CorrectAnswer) {
-    alert("incorrect!");
+    alert("You answered " + response + " in " + TimetoRespond + " seconds. Your Response was INCORRECT");
 }
+
+
+
+
+
 
 let age = prompt('How old are you?');
 if (age < 12) {
@@ -43,19 +49,8 @@ if (WholeNumber % 2 == 0) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//random number with feedback
+///alert("In this experiment we will measure your response time. You will be shown a series of simple math equations. Answer these equations as quickly and accurately as you can.");
 
 
 
