@@ -35,6 +35,15 @@ if (age >= 30) {
     alert("Adult");
 }
 
+let WholeNumber = prompt("Please enter a whole number");
+if (WholeNumber % 2 == 0) {
+    alert("The number you entered was even")
+} else {
+    alert("The number you entered was odd");
+}
+
+
+
 
 
 
