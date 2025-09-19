@@ -11,44 +11,46 @@ num20uput.innerHTML = randomNum2
 //update elements on the page
 
 
-// Create variables to store references to elements on the page
-let num1s = document.getElementsById('num1');
-let num2s = document.getElementById('num2');
-let response1 = document.getElementById("response");
-let feedback = document.getElementById("Feedback");
-let form = document.getElementById("form")
 
-//generating numbers
-let Num1 = Math.floor(Math.random() * 100) + 1;
-let Num2 = Math.floor(Math.random() * 100) + 1;
-let correctAnswer = Num1 + Num2;
+// Get references to the page elements
+let num1Element = document.getElementById('num1');
+let num2Element = document.getElementById('num2');
+let responseInput = document.getElementById("response");
+let feedback = document.getElementById("feedback");
+let form = document.getElementById("form");
+let instructions = document.getElementById("instructions");
 
-//putting numbers on a page
-num1s.textContent = Num1;
-num2s.textContent = Num2;
+// Generate random numbers
+let randomnum1 = Math.floor(Math.random() * 100);
+let randomnum2 = Math.floor(Math.random() * 100);
+let correctAnswer = randomNum1 + randomNum2;
 
-let Start = Date.now();
+// Display numbers on the page
+num1Element.textContent = randomNum1;
+num2Element.textContent = randomNum2;
 
-//form submission
+// Timing
+let startTime = Date.now();
+
 form.addEventListener('submit', function (event) {
     event.preventDefault();
-    form.style.display = 'none';
-    let end = Date.now();
 
-    let TimetoRespond = (end - Start) / 1000;
+    let endTime = Date.now();
+    let timeToRespond = ((endTime - startTime) / 1000).toFixed(2); // seconds
+    let userAnswer = Number(responseInput.value);
 
-    let response = Number(response.value);
+    let resultMsg = 'You answered ' + userAnswer + ' in ' + timeToRespond + ' seconds. Your response was ';
 
-
-    if (response == correctAnswer) {
-
-        feedback.textContent = "You answered " + response + " in " + TimetoRespond + " seconds. Your Response was CORRECT";
-
-    } else if (response != correctAnswer) {
-        feedback.textContent = "You answered " + response + " in " + TimetoRespond + " seconds. Your Response was INCORRECT";
-
+    if (userAnswer === correctAnswer) {
+        resultMsg += "CORRECT.";
+    } else {
+        resultMsg += 'INCORRECT. The correct answer was ' + correctAnswer + '.';
     }
 
-})
+    feedback.textContent = resultMsg;
 
+    // Hide the form and instructions after answer
+    form.style.display = 'none';
+    instructions.style.display = 'none';
+});
 
