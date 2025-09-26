@@ -8,7 +8,7 @@ console.log(celsiusToFahrenheit(10))
 */
 
 
-//convertTemp
+/*convertTemp
 function convertTemp(temp, convertTo) {
     if (convertTo == "c") {
         // Fahrenheit to Celsius conversion
@@ -21,3 +21,12 @@ function convertTemp(temp, convertTo) {
     }
 }
 console.log(convertTemp(10, 'c'));
+*/
+
+// getWordLengths
+function getWordLengths(words) {
+    return words.map(word => word.length);
+}
+
+let words = ['apple', 'banana', 'cherry', 'pear', 'grape'];
+console.log(getWordLengths(words));
