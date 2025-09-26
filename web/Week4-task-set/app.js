@@ -23,10 +23,33 @@ function convertTemp(temp, convertTo) {
 console.log(convertTemp(10, 'c'));
 */
 
-// getWordLengths
+/* getWordLengths
 function getWordLengths(words) {
     return words.map(word => word.length);
 }
 
 let words = ['apple', 'banana', 'cherry', 'pear', 'grape'];
 console.log(getWordLengths(words));
+*/
+
+
+//getLongestWord
+
+function getLongestWord(words) {
+    let LongestWord = ("");
+
+    for (let i = 0; i < words.length; i++) {
+        let currentWord = words[i];
+
+        if (currentWord.length > LongestWord.length) {
+            LongestWord = currentWord; // update if current is longer
+        }
+    }
+    return LongestWord;
+
+}
+
+
+//trialrun
+let words = ['apple', 'banana', 'cherry', 'pear', 'grape'];
+console.log(getLongestWord(words));
