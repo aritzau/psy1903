@@ -54,7 +54,7 @@ let words = ['apple', 'banana', 'cherry', 'pear', 'grape'];
 console.log(getLongestWord(words));
 */
 
-//Get Odd numbers
+/* Get Odd numbers
 function getOddNumbers(numbers) {
     let results = [];
     //loop
@@ -71,6 +71,61 @@ function getOddNumbers(numbers) {
     return results;
 }
 console.log(getOddNumbers([1, 2, 3, 4, 5]));
+*/
+
+
+// Even/Odd Response Time Task 8
+
+// welcome alert followed by the for loop
+
+alert(
+    "Welcome to the even/odd response time task." +
+    "You are about to see a series of numbers." +
+    "If the number you see is EVEN, type the letter 'e'." +
+    "If the number you see is ODD, type the letter 'o'." +
+    "Please answer as quickly and accurately as possible."
+);
+
+let evenOdd = [];
+
+for (let i = 0; i < 5; i++) {
+
+    let number = Math.floor(Math.random() * 20) + 1;
+
+    let start = Date.now()
+
+    let response = prompt(`Number: ${number}
+        Type the letter "e" for EVEN  
+        Type the letter "o" for ODD.`);
+
+
+    let end = Date.now();
+
+    let responseTime = ((end - start) / 1000);
+
+
+    if (response == null) response = "";
+
+    response = response.trim().toLowerCase();
+
+
+    let Even = number % 2 === 0;
+    let correct = (response == "e" && Even) || (response == "o" && !Even);
+
+
+    evenOdd.push({
+        number: number,
+        response: response,
+        correct: correct,
+        responseTime: +responseTime.toFixed(2),
+    });
+
+    console.log(evenOdd);
+}
+alert("Thank you for participating in the experiment!");
+
+
+
 
 
 
