@@ -73,12 +73,47 @@ function getOddNumbers(numbers) {
 console.log(getOddNumbers([1, 2, 3, 4, 5]));
 */
 
+//task 7 filter numbers
+function filterNumbers(numbers, evenOrOdd) {
+    let results = [];
+
+    for (let i = 0; i < numbers.length; i++) {
+        let Num = numbers[i];
+
+        if (evenOrOdd == "even" && Num % 2 == 0) {
+            results.push(Num);
+        } else if (evenOrOdd == "odd" && Num % 2 !== 0) {
+            results.push(Num);
+        }
+    }
+
+    return results;
+}
+
+console.log(filterNumbers([1, 2, 3, 4, 5], 'even'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Even/Odd Response Time Task 8
 
 // welcome alert followed by the for loop
 
-alert(
+/*alert(
     "Welcome to the even/odd response time task." +
     "You are about to see a series of numbers." +
     "If the number you see is EVEN, type the letter 'e'." +
@@ -123,7 +158,7 @@ for (let i = 0; i < 5; i++) {
     console.log(evenOdd);
 }
 alert("Thank you for participating in the experiment!");
-
+*/
 
 
 
