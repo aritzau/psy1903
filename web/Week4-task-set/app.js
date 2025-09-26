@@ -66,9 +66,11 @@ function getOddNumbers(numbers) {
         if (number % 2 != 0) {
             results.push(number);
         }
+
     }
     return results;
-
 }
-
 console.log(getOddNumbers([1, 2, 3, 4, 5]));
+
+
+
