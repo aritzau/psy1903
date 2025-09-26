@@ -33,7 +33,7 @@ console.log(getWordLengths(words));
 */
 
 
-//getLongestWord
+/*getLongestWord
 
 function getLongestWord(words) {
     let LongestWord = ("");
@@ -49,7 +49,26 @@ function getLongestWord(words) {
 
 }
 
-
-//trialrun
+trialrun
 let words = ['apple', 'banana', 'cherry', 'pear', 'grape'];
 console.log(getLongestWord(words));
+*/
+
+//Get Odd numbers
+function getOddNumbers(numbers) {
+    let results = [];
+    //loop
+
+    for (let i = 0; i < numbers.length; i++) {
+        let number = numbers[i];
+
+
+        if (number % 2 != 0) {
+            results.push(number);
+        }
+    }
+    return results;
+
+}
+
+console.log(getOddNumbers([1, 2, 3, 4, 5]));
