@@ -10,6 +10,7 @@ let welcome = {
     <p>Press SPACE to begin.</p>
     `,
     choices: [' ']
+
 };
 timeline.push(welcome)
 
