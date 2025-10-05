@@ -44,6 +44,15 @@ for (let i = 0; i < mathTrials.length; i++) {
     timeline.push(mathResponse);
 }
 
+let wrongAnswer = correctAnswer + Math.floor(Math.random() * 10) + 1;
+var trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: <p> What is ${trial.num1} + ${trial.num2} ? </p>,
+    choices: [correctAnswer, wrongAnswer],
+    prompt: <p> Click the correct answer. </p>,
+}
+
+
 let debriefTrial = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
@@ -65,4 +74,5 @@ timeline.push(debriefTrial);
 
 
 jsPsych.run(timeline);
+
 
