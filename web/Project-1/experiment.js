@@ -1,19 +1,35 @@
 let jsPsych = initJsPsych({
     show_progress_bar: true
 });
-//progress bar
-
 
 let timeline = [];
 
 
-// Instructions'
 
-let instructions = {
+
+
+// welcome page'
+
+let welcome_Page = {
 
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
     <h2 class="experiment-heading">Welcome to the Distractor Load and Cognitive Processing Speed in Visual Search Task!</h2>
+
+    <p> The experiment you are about to complete is an educational exercise designed for PSY 1903: Programming for Psychological Scientists; it is not intended as a true scientific experiment.
+    <p> No identifying information will be collected, data will not be shared beyond our class, and your participation is completely voluntary.
+    <p> If you have any questions, please reach out to Annabella Ritzau (aritzau@college.harvard.edu), one of the researchers.
+    <p> If you agree to participate, press <span class= 'key'> SPACE</span> to begin. </p> 
+`,
+    choices: [' ']
+
+}
+
+timeline.push(welcome_Page);
+
+let instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
     <h2 class="experiment-heading">Instructions</h2>
     <p>In this experiment, you will see a series of "word clouds" appear on the screen. Each word cloud contains a selection of words displayed in the same font and size.<br>
     <p>Your task is to find and click on the target word. This will always be the same throughout the experiment. The target word will be provided at the top of the screen so you can refer to it during each trial.</p>
@@ -22,15 +38,13 @@ let instructions = {
     <p>Your goal:Find and click the target word as quickly and as accurately as possible in each word cloud.</p>
     <p>Press <span class='key'>SPACE</span> to begin.</p>
 `,
-
     choices: [' ']
 
-}
 
+}
 timeline.push(instructions);
 
-
-
+experimentConditions = shuffleNoConsecutiveRepeats(experimentConditions, "cloudSize");
 
 
 
@@ -40,26 +54,26 @@ shuffleArray(experimentConditions);
 //Create the distractor pool (all words except targetWord)
 // Make a new array with all words BUT "ocean"—used for picking distractors
 
-var distractorPool = [];
-for (var i = 0; i < wordPool.length; i++) {
+let distractorPool = [];
+for (let i = 0; i < wordPool.length; i++) {
     if (wordPool[i] !== "ocean") { // If this word is NOT "ocean"...
         distractorPool.push(wordPool[i]); // ...add it to the list of distractors
     }
 }
 
 // all our trial word clouds
-var all_trials = [];
+let all_trials = [];
 
 // For EVERY trial we build...
-for (var i = 0; i < experimentConditions.length; i++) {
-    var thisCond = experimentConditions[i]; // Get this trial's condition (cloudSize)
-    var cloud = ["ocean"]; // Start each word cloud with only "ocean" (the target)
+for (let i = 0; i < experimentConditions.length; i++) {
+    let thisCond = experimentConditions[i]; // Get this trial's condition (cloudSize)
+    let cloud = ["ocean"]; // Start each word cloud with only "ocean" (the target)
 
     //add random distractors until we reach the correct total size
-    var usedDistractors = []; // Keep track of distractors we've added for this cloud
+    let usedDistractors = []; // Keep track of distractors we've added for this cloud
     while (cloud.length < thisCond.cloudSize) { // Until cloud is big enough
         shuffleArray(distractorPool);
-        var word = distractorPool[0]; // Pick a random distractor word
+        let word = distractorPool[0]; // Pick a random distractor word
         if (usedDistractors.indexOf(word) === -1) { // If we haven't added this word yet...
             cloud.push(word); // Add it to this word cloud
             usedDistractors.push(word); // Keep track, to avoid duplicates
@@ -68,6 +82,18 @@ for (var i = 0; i < experimentConditions.length; i++) {
 
     shuffleArray(cloud); //so that target word isn't always first
 
+
+    for (let j = 0; j < cloud.length; j++) {
+        if (j < cloud.length / 2) { // i used /2 because i was not sure how to split the colour assignment in half, at first i was playing around with 0.5 but i was not successful, i asked to chat to guide me and i realized i could re-write 0.5 as /2.
+            cloud[j] =
+                `<span style="color:red;">${cloud[j]}</span>`;
+        } else {
+            cloud[j] =
+                `<span style="color:blue;">${cloud[j]}</span>`;
+        }
+    }
+    //the usage of ${cloud [j]} from what i understood is that we asking javascript to treat ${cloud[j]} like a placeholder and put the real word from the cloud inside the string and make it either red or blue.
+
     // Record this trial setup so we can use it later
     all_trials.push({
         cloudSize: thisCond.cloudSize, // How many words are in the cloud
@@ -75,8 +101,6 @@ for (var i = 0; i < experimentConditions.length; i++) {
         wordCloud: cloud // The shuffled array of words to show
     });
 }
-// progress bar
-
 
 
 
@@ -103,11 +127,14 @@ for (let i = 0; i < all_trials.length; i++) {
     });
 }
 
+
 //save results
 let resultsTrial = {
     type: jsPsychHtmlKeyboardResponse,
     choices: ['NO_KEYS'],
     stimulus: `
+        
+
         <h1>Please wait...</h1>
         <span class="loader"></span>
         <p>We are saving the results of your inputs.</p>
@@ -183,6 +210,7 @@ timeline.push(debriefTrial);
 
 
 jsPsych.run(timeline);
+
 
 
 
