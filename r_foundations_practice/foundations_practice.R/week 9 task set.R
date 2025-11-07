@@ -29,7 +29,7 @@ typeof(favorite_numbers)
 class(favorite_numbers)
 
 #### Create RTs
-rt <- c(480, 530, 495, 610, 455, 390, 510, 565, 430, NA)##numeric vector
+rt <- c(480, 530, 495, 610, 455, 390, 510, 565, 430, 500)##numeric vector
 mean(rt)##496.5
 sd(rt)##63.81614
 
@@ -52,12 +52,8 @@ str(rt)
 subject_id <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 congruent <- c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE)
 condition <- c("control", "control", "incongruent", "control", "incongruent", "control", "incongruent", "incongruent", "control", "incongruent")
-experiment_data <-data.frame(
-  subject_id = subject_id,
-  congruent = congruent,
-  condition = condition,
-  rt = rt
-)### usage of AI
+experiment_data <-data.frame(subject_id,congruent,condition,rt)
+
 ##inspect
 head(experiment_data)      # View the first few rows
 str(experiment_data)       # See the structure of the data frame
@@ -95,6 +91,10 @@ nrow(fast_incongruent)
 
 ##Data types
 sapply(experiment_data, typeof)
+experiment_data$condition <- as.factor(experiment_data$condition) 
+
+str(experiment_data) 
+ sapply(experiment_data, typeof)
 
 
 

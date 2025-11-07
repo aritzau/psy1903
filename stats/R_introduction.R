@@ -17,3 +17,40 @@ dir.create("stats/rIntro/output")
 setwd("~/Desktop/psy1903/stats/rIntro/scripts")
 
 ## Save this script as R_introduction.R within your scripts directory (you can just use command+S or File → Save As)
+
+install.packages("ggplot2")
+library("ggplot2")
+
+
+#### (2) Installation of packages ----------------------------------------------
+
+## Packages are essential toolboxes that you load into R and allow you to do cool things with your data
+## One package called "pacman" makes installing packages very easy...
+
+if (!require("pacman")) {install.packages("pacman"); require("pacman")}  # First install and load in pacman to R
+
+## Then use p_load and a list of all of the packages that you need for the project (with each one being in "quotes")
+
+p_load("tidyverse","rstudioapi","lme4","emmeans","psych","corrplot")  # tidyverse contains many packages like dplyr, tidyr, stringr, and ggplot2, among others, and the additional packages should cover our data manipulations, plotting, and analyses
+
+
+myVar <- 8  # This will create a variable called myVar and assign it a value of 8.
+myVar + 2  # This will use the myVar variable and add 2, outputting 10
+myVar <- myVar + 2  # This will overwrite the value of 8, and myVar will now be assigned 10 instead
+
+sum(1, 2, 3)       # Adds numbers 1, 2, and 3, returns 6
+mean(c(1, 2, 3))   # Finds the mean (average) of the numbers. 
+length(c(1, 2, 3)) # Finds the length of a vector, returns 3
+
+mean(c(1, 2, 3, NA, 5)) # Will output NA because it doesn't know how to handle it
+mean(c(1, 2, 3, NA, 5), na.rm = TRUE) # Will remove the NA and calculate the mean of the remaining numbers, outputting 2.75 (the correct answer)
+
+mydata <- read.csv("~/Desktop/psy1903/stats/data.csv")
+mydata <- read.csv("~/Desktop/psy1903/stats/data.csv", header = TRUE, stringsAsFactors = FALSE, na.strings = c("NA", "?"))
+
+head(mydata)      # View the first few rows
+str(mydata)       # See the structure of the data frame
+summary(mydata)   # Get a summary of each column
+
+
+mydata$moodGroup <- as.factor(mydata$moodGroup)

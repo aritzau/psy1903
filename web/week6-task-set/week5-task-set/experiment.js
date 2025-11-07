@@ -1,4 +1,3 @@
-/*
 let jsPsych = initJsPsych();
 let timeline = [];
 
@@ -96,8 +95,8 @@ let resultsTrial = {
         `,
     on_start: function () {
 
-        let prefix = 'lexical-decision';
-        let dataPipeExperimentId = 'your-experiment-id-here';
+        let prefix = 'Visual Search Task';
+        let dataPipeExperimentId = 'y';
         let forceOSFSave = false;
 
 
@@ -123,7 +122,7 @@ let resultsTrial = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Accept: '**',
+                Accept: '*/*',
             },
             body: JSON.stringify({
                 experimentID: dataPipeExperimentId,
@@ -138,7 +137,7 @@ let resultsTrial = {
 }
 timeline.push(resultsTrial);
 
-*/
+
 
 
 

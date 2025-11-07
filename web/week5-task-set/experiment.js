@@ -7,12 +7,14 @@ let welcome = {
     <h1>Welcome to the Math Response Time Task!</h1>
     <p>In this experiment, you will be shown a series of math questions.</p>
     <p>Please answer as quickly and accurately as possible.</p>
-    <p>Press SPACE to begin.</p>
+    <p>Press <span class="key">SPACE</span> to begin</p>
     `,
     choices: [' ']
 
 };
 timeline.push(welcome)
+
+
 
 let mathTrials = [];
 for (let i = 0; i < 3; i++) {
@@ -45,14 +47,14 @@ for (let i = 0; i < mathTrials.length; i++) {
     timeline.push(mathResponse);
 }
 
-let wrongAnswer = correctAnswer + Math.floor(Math.random() * 10) + 1;
+/*let wrongAnswer = correctAnswer + Math.floor(Math.random() * 10) + 1;
 var trial = {
     type: jsPsychHtmlButtonResponse,
     stimulus: <p> What is ${trial.num1} + ${trial.num2} ? </p>,
     choices: [correctAnswer, wrongAnswer],
     prompt: <p> Click the correct answer. </p>,
 }
-
+*/
 
 let debriefTrial = {
     type: jsPsychHtmlKeyboardResponse,

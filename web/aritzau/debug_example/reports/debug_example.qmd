@@ -1,0 +1,66 @@
+---
+title: "debug_example"
+format: html
+
+title: "Week 10 Debugging and Refactoring"
+author: "Your Name"
+format: html
+execute:
+  echo: true
+  warning: true
+  message: true
+
+####creating a debug dataset
+set.seed(1903)
+
+iat_data <- data.frame(
+  subject_id = 1:40,
+  rt = round(rnorm(40, mean = 520, sd = 120)),
+  congruent = sample(c(TRUE, FALSE), 40, replace = TRUE),
+  condition = sample(c("control", "incongruent"), 40, replace = TRUE)
+)
+
+# Randomly assign two NA values in the rt column
+iat_data$rt[sample(1:nrow(iat_data), 2)] <- NA
+
+# Save for later use
+saveRDS(iat_data, file = "data/raw/iat_data.rds")
+
+
+####commonerrorexamples
+
+#summary(iat_data_summary)
+#solution <- iat_data_summary <- summary(iat_data)
+
+#mean(iat_data$rt)
+##solution <- mean(iat_data$rt, na.rm = TRUE)
+
+#mean(iat_data$condition)
+##solution <- str(iat_data)
+
+####Introduce the bug
+calculate_group_means <- function(data) {
+  #browser() in case there is anerror
+  # BUG: using rt instead of data$rt
+  result <- tapply(data$rt, data$condition, mean, na.rm = TRUE)
+  return(result)
+}
+
+calculate_group_means(iat_data)
+
+#traceback()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

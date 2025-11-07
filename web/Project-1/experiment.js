@@ -61,6 +61,40 @@ for (let i = 0; i < wordPool.length; i++) {
     }
 }
 
+let fixation_button_trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Place your mouse at the center and click the + to start the next trial.</p>',
+    choices: ['+'],
+    target: '+'
+};
+
+//used AI for this portion, this is calculating the position of the buttons. with the intention of creating 15 fixed positions that are all equal distance from the center
+
+// --- 1. Circle positions ---
+const N_POSITIONS = 15;
+const RADIUS = 250;
+const CENTER_X = 512; // Set to half your display width, or tune as needed
+const CENTER_Y = 384; // Set to half your display height, or tune as needed
+
+const circlePositions = [];
+for (let i = 0; i < N_POSITIONS; i++) {
+    const angle = (2 * Math.PI / N_POSITIONS) * i - Math.PI / 2; // 0 is top
+    circlePositions.push({
+        left: CENTER_X + RADIUS * Math.cos(angle),
+        top: CENTER_Y + RADIUS * Math.sin(angle)
+    });
+}
+
+function getButtonPositionStyles(n_buttons) {
+    // Randomly sample unique positions for this trial
+    const positions = jsPsych.randomization.sampleWithoutReplacement(circlePositions, n_buttons);
+    // Return array of style strings for each button
+    return positions.map(pos =>
+        `position:absolute; left:${pos.left}px; top:${pos.top}px; transform:translate(-50%, -50%);`
+    );
+}
+
+
 // all our trial word clouds
 let all_trials = [];
 
@@ -105,7 +139,14 @@ for (let i = 0; i < experimentConditions.length; i++) {
 
 
 
+
+
+
+
+
 for (let i = 0; i < all_trials.length; i++) {
+    if (i > 0) timeline.push(fixation_button_trial);
+
     timeline.push({
         type: jsPsychHtmlButtonResponse,
         stimulus: `<p>Find the word: <b>ocean</b></p>`,

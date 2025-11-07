@@ -43,9 +43,13 @@ console.log(course_Name);
 
 console.log(updatedCourseName);
 
+console.log(hello);
 
 
 
+let a = 5;
+let b = 10;
+console.log(a > 3 && b < 15);
 
 
 
