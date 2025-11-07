@@ -12,7 +12,16 @@ execute:
 
 ```{r}
 ## Load the saved dataset
-experiment_data <- readRDS("../data/raw/experiment_data.rds")
+# Save the experiment_data you have as a file
+dir.create("data/raw", recursive = TRUE, showWarnings = FALSE)
+
+# Save the file
+saveRDS(experiment_data, "data/raw/experiment_data.rds")
+
+# Confirm it worked
+list.files("data/raw")
+#Used Ai because experiment_data was not in my raw files, had an effect on the rest of the code
+experiment_data <- readRDS("../data/raw/experiment_data")
 
 ## Take a quick look at the first few rows
 head(experiment_data)
@@ -36,13 +45,14 @@ getRandomNumber <- function(min = 1, max = 10, number = 1) {
 ## Classify reaction times into "Fast", "Slow", or "Unknown" (default threshold = 500ms)
 ## code
 #function
-rt <- function(rt, threshold = 500) {
+classify_rt <- function(rt, threshold = 500) {
   if (!is.numeric(threshold) || length(threshold) != 1) {
-    stop("Error: 'threshold' must be a single numeric value.")
-  }
+    print("Error: 'threshold' must be a single numeric value.")
+  } else
+    
   if (!is.numeric(rt)) {
-    stop("Error: 'rt' must be numeric.")
-  }
+    print("Error: 'rt' must be numeric.")
+  } 
 
   category <- ifelse(is.na(rt), "Unknown",
                      ifelse(rt < threshold, "Fast", "Slow"))
@@ -52,6 +62,125 @@ return(category)
 ```
 
 #### Q3: Loops vs. Vectorization comparison to create new data----------
+```{r}
+#create a new age column with a NA values
+experiment_data$age <- NA
+#creates age in the experiment_data data-frame
+
+for (i in 1:nrow(experiment_data)) {
+  experiment_data$age[i] <- getRandomNumber(min = 18, max = 65, number = 1)
+}
+##nearly got it right but missed on the [i] which AI pointed out loops i from 1 to the number of rows
+experiment_data$age <- sample(18:65, size = nrow(experiment_data), replace = TRUE)
+                              
+#loop i from one to the number of rows, minis 18 and max is 65
+
+head(experiment_data)
+```
+
+####Applying conditionals to loops with vectorized functions
+#Empty column
+```{r}
+experiment_data$rt_category_loop <-NA
+for (i in 1:nrow(experiment_data)) {
+  experiment_data$rt_category_loop[i] <- classify_rt(experiment_data$rt[i])
+}
+
+```
+
+#Vectorized version(quicker)
+```{r}
+experiment_data$rt_category_vec <- classify_rt(experiment_data$rt)
+```
+
+
+```{r}
+table(loop = experiment_data$rt_category_loop,
+      vec  = experiment_data$rt_category_vec,
+      useNA = "ifany")
+```
+
+####Debugging function: Is there any bugs
+
+```{r}
+## Create Buggy Function
+threshold <- 500
+##wasnt sure if flag was the correct variable but i saw it on the notes?
+
+#flag_fast <- function(rt_vector) {
+#  rt_vector < threshold
+#}
+#call the output- is it above 500 or below, flase=slow and true=quick
+
+#fixed version
+flag_fast <- function(rt_vector, threshold = 500) {
+  rt_vector < threshold
+}
+
+flag_fast(experiment_data$rt)
+rm(threshold)
+```
+
+####Debugging Tools in Action-finding out why a group mean is NA
+```{r}
+means <- tapply(experiment_data$rt,
+                        experiment_data$condition,
+                        mean,
+                        na.rm = TRUE)
+print(paste("Mean for control:", subject_means["control"]))
+print(paste("Mean for incongruent:", subject_means["incongruent"]))
+# How many NAs overall?
+sum(is.na(experiment_data$rt))
+
+# How many NAs by condition?
+tapply(is.na(experiment_data$rt), experiment_data$condition, sum)
+
+# Optional: quick sanity checks
+summary(experiment_data$rt)
+with(experiment_data, table(condition, is.na(rt)))
+```
+####q7: Using Ai for debugging or refactoring (will intentionally create a small bug)
+```{r}
+#bug
+experiment_data$rt <- c("450", "520", "NA", "480")
+#fixed
+experiment_data$rt <- c(450, 520, 480, 500, 510, 495, 470, 530, 505, 490)
+##Ai was really good at breaking down the prompt and explaining what went wrong and then instead of giving me the code it explained what went wrong and what i can do to improve the code. It worked quite well.
+
+experiment_data$rt_category <- ifelse(experiment_data$rt < 500, "Fast", "Slow")
+```
+
+
+####Question 8: Saving and reloading objects----
+```{r}
+write.csv(
+  x = experiment_data,
+  file = "data/cleaned/my_cleaned_data.csv",
+  row.names = FALSE
+)
+```
+```{r}
+saveRDS(
+  object = experiment_data, 
+  file = "data/cleaned/experiment_data.rds"
+)
+
+```
+
+
+```{r}
+# Reload the .rds file (best for preserving R object structure)
+reloaded_rds <- readRDS("data/cleaned/experiment_data.rds")
+
+# Reload the .csv file
+reloaded_csv <- read.csv("data/cleaned/experiment_data.csv")
+
+# You can then check your Environment pane to see if 'reloaded_rds' 
+# and 'reloaded_csv' appeared successfully!
+
+```
+
+
 
 
 
