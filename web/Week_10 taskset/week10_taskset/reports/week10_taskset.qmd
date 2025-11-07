@@ -169,16 +169,14 @@ saveRDS(
 
 
 ```{r}
-# Reload the .rds file (best for preserving R object structure)
+
 reloaded_rds <- readRDS("data/cleaned/experiment_data.rds")
 
-# Reload the .csv file
 reloaded_csv <- read.csv("data/cleaned/experiment_data.csv")
 
-# You can then check your Environment pane to see if 'reloaded_rds' 
-# and 'reloaded_csv' appeared successfully!
 
 ```
+
 
 
 
