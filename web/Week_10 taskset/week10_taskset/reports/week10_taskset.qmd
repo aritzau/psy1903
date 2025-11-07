@@ -51,13 +51,14 @@ classify_rt <- function(rt, threshold = 500) {
   } else
     
   if (!is.numeric(rt)) {
-    print("Error: 'rt' must be numeric.")
+    print("Error: 'rt' must be numeric")
   } 
 
   category <- ifelse(is.na(rt), "Unknown",
                      ifelse(rt < threshold, "Fast", "Slow"))
 return(category)
 }
+
 
 ```
 
