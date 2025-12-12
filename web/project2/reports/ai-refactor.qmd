@@ -1,0 +1,244 @@
+---
+title: "ai-refactor"
+author: "Annabella Ritzau"
+format: html
+---
+
+
+```{r}
+# I have an R project for analyzing IAT data. Please review these scripts and 
+# list 3-5 specific ways the code could be optimized or made clearer. 
+# 
+# We primarily use base R, here, jsonlite, aggregate, and the apply family of 
+# functions, but not dplyr or tidyverse. Please put any tidyverse recommendations 
+# in their own section and suggest at least 3 non-tidyverse improvements. 
+# 
+# We also have not learned Makefile or targets pipelines
+# ( I added all the scripts)
+```
+
+```{r}
+# #Here is what AI (Gemini said)
+# ##1) Refactor summarize_behavior.R RT Centering Loop
+# The current for loop for RT centering is highly inefficient because the mean is calculated repeatedly and the loop structure is slow in R.
+# 
+# valid_data_rt$rt_centered <- NA_real_
+# for (i in 1:nrow(valid_data_rt)) {
+#   valid_data_rt$rt_centered[i] <- valid_data_rt$rt[i] - mean(valid_data_rt$rt, na.rm = TRUE)
+# }
+# Optimization Suggestion (Vectorization):
+# 
+# You should calculate the mean once and then use R's vectorization to apply the subtraction to the entire column. This is significantly faster and clearer.
+# 
+# R
+# # Calculate mean once
+# rt_mean <- mean(valid_data_rt$rt, na.rm = TRUE)
+# # Vectorized subtraction
+# valid_data_rt$rt_centered <- valid_data_rt$rt - rt_mean
+# #(Similar to what i wrote but i did everything in one line, perhaps this version is better because it makes it slightly more readable)
+# 
+# ##2
+# Standardize Column Indexing in summarize_behavior.R
+# In summarize_behavior.R, you switch between using column names and hard-coded numerical indices when filtering. Using column names consistently makes the code more robust to changes in the raw data file structure.
+# 
+# Current Code (summarize_behavior.R):
+# 
+# R
+# 
+# valid_data_rt <- data[data[ , 3] >= 300 & data[ , 3] <= 900 & data[ , 12] == TRUE, ]
+# valid_data_acc <- data[data[ , 3] >= 300 & data[ , 3] <= 900, ]
+# Clarity Suggestion (Use Names):
+# 
+# You've already verified the required column names in import_and_process.R. Use them here for clarity.
+# # Use the rt_min and rt_max arguments, and use column names (data$rt, data$correct)
+# 
+# # 1. Filter data for calculating the D-score (requires correct responses and valid RTs)
+# valid_data_rt <- data[
+#   data$rt >= rt_min & 
+#   data$rt <= rt_max & 
+#   data$correct == TRUE, 
+#   , drop = FALSE]
+# 
+# # 2. Filter data for calculating overall accuracy (requires valid RTs, correctness is tracked later)
+# valid_data_acc <- data[
+#   data$rt >= rt_min & 
+#   data$rt <= rt_max, 
+#   , drop = FALSE]
+# 
+# Readability: It is immediately clear that the filter is operating on the rt and correct columns, instead of relying on knowing that column 3 is RT and column 12 is correct.
+# 
+# Robustness: This code is now independent of the order of columns in the input CSV file. As long as the columns are named rt and correct, the function will work correctly.
+# ##Quite different to what i wrote.
+# 
+# ##3
+# This one, i used AI for since i genuienly was not sure how to refacotr code, some of my attempts like row <- lapply(files, import_and_process) had me in a pickle and then once i asked AI i realized it was because of the single S.
+# 
+# Use lapply for File Processing (Clarity/Efficiency)In build_participant_wide.R, the explicit for loop for applying import_and_process to every file should be replaced with lapply, which is the idiomatic R function for applying a function over elements of a
+# list/vector.
+# Current Code 
+# rows <- list()
+# for (i in seq_along(files)) {
+#   file_name <- files[i]
+#   rows[[i]] <- import_and_process(file_name)
+# }
+# out  <- do.call(rbind, rows)
+# Clarity Suggestion (Using lapply):
+# 
+# R
+# rows <- lapply(files, import_and_process)
+# out  <- do.call(rbind, rows)
+# 
+# ##4
+# Did not see this 
+# score_questionnaire.R Parameter Naming
+# In score_questionnaire.R, the argument for the character vector of JSON strings is named json_string, which suggests a single string, but the logic in import_and_process.R passes questionnaire_df$response, which is a character vector (even if it's expected to only have one element). The name responses is also used for a variable inside the function.
+# 
+# Current Code (score_questionnaire.R):
+# 
+# R
+# 
+# score_questionnaire <- function(json_string, ... ) {
+#   # ...
+#   responses <- jsonlite::fromJSON(as.character(json_string))
+#   # ...
+# }
+# Clarity Suggestion:
+# 
+# Rename the argument to json_responses or json_vec to reflect that it is a vector of one or more JSON strings, improving clarity for future users (and your future self).
+# 
+# R
+# 
+# score_questionnaire <- function(json_responses, 
+#                                 reverse = c(12, 5), # Note: c(12, 5) seems incorrect based on the example in the comments c(2, 5)
+#                                 scale_min = 1L, 
+#                                 scale_max = 5L) {
+#   
+#   ## 1) If the JSON string is missing or empty, return a numeric NA
+#   # Use the first element for the check, assuming only one element is expected
+#   if (is.null(json_responses) || is.na(json_responses[1]) || !nzchar(json_responses[1])) {
+#     warning("JSON string is missing or empty. Returning NA.")
+#     return(NA_real_)
+#   }
+#   
+  # ...
+##Tidyverse reccomendations
+# 1. Use filter() and mutate() for Data Cleaning
+# Benefit: Replaces numerous base R subsetting calls (df[...]) with a single, readable chain (%>%) of descriptive actions.
+# 
+# Example: Cleaning, filtering RTs, and centering can be done in one step.
+# 
+# 2. Use group_by() and summarize() for Aggregation
+# Benefit: Simplifies aggregation by combining the functionality of aggregate() and the apply family. You can calculate multiple metrics (mean RT, mean accuracy) for multiple groups in a single block of code, instead of separate tapply calls.
+# 
+# 3. Use purrr::map_dfr() for Looping and Combining
+# Benefit: Replaces the three-step base R process of for loop + list storage + do.call(rbind, ...) with a single, elegant function call. It executes the function over a list of files and automatically returns the results bound into one final data frame.
+```
+
+```{r}
+# “Here is my refactored version of the same project. What improvements would you recommend now?”
+# + “Please identify remaining opportunities to streamline or reorganize this codebase.”
+# 
+# What improvements you already captured on your own,
+# 'This is a significantly improved and much clearer codebase! You successfully implemented the vectorization for RT centering (in summarize_behavior.R) and the use of lapply (in build_participant_wide.R), and improved the column-name indexing for filtering. Great job on the refactoring and adding helpful comments.'
+# 
+# what changes the AI suggests only after seeing your refactor
+# "1. Centralize IAT Condition Definition (Robustness/Streamlining)
+# The hard-coded strings that define the IAT conditions (desired_order) are repeated in two different files:
+# 
+# calculate_iat_dscore.R
+# 
+# summarize_behavior.R
+# 
+# If your IAT structure ever changes, you have to remember to update both places, which is a major source of bugs.
+# 
+# Recommendation: Move desired_order into a single, global constant (e.g., in import_and_process.R or its own script), or pass it as an explicit argument. Since you are not using a project/dependency system like targets, the simplest solution is to define it once in the script that runs first (like import_and_process.R) and pass it down, or define it in a sourceable file."
+# 
+# What improvements your version needed that the original also needed
+# 1. The Critical Typo in IAT Condition Strings
+# This is the most critical issue that was present in both your original and refactored code (and still remains in the version you just provided, requiring the centralization suggested in my last response).
+# 
+# The Problem:
+# In both calculate_iat_dscore.R and summarize_behavior.R, the string used for the Incongruent condition appears to contain a typo or inconsistency if the intention was for both conditions to use the same structure (... or ... or ... or ...).
+# 
+# The definition in your files is:
+# 
+# R
+# 
+# desired_order <- c(
+#   "nature or serenity or school or anxiety", # **CONGRUENT** (Uses 'or' consistently)
+#   "nature or anxiety or school or serenity"  # **INCONGRUENT** (Your original code snippet had an 'and' here, but even the current 'or' usage is susceptible to change)
+# )
+# The deeper issue isn't the current typo, but the fact that the exact string must match the data perfectly. If the data changes slightly, your code breaks silently by failing to group trials.
+# 
+# The Improvement Needed (in both versions):
+# Centralization: The need to define these long strings once and reuse them (my Suggestion #1: Centralize IAT Condition Definition) was necessary in both versions to prevent bugs and make updates easier.
+# 
+# Verification: Even when centralized, a robust system needs to verify that these long strings perfectly match the unique values found in test_df$expectedCategoryAsDisplayed.
+```
+
+
+```{r}
+### C. Writing your comparison report in Quarto
+
+# Your final step is to create a short online Quarto Report (`ai-refactor.qmd`) that summarizes what you found.
+# This report should include:
+# 
+# + A brief description of the original issues
+# The debugging in question was:
+#   2 in import_and_process
+#   2 in score_questionnaire
+#   1 in summarize_behaviours
+#   1 in build_participant_wide
+#   1 in calculate_iat_dscore
+#   
+#   + A summary of your refactoring choices including what you changed and why you changed it.
+#   
+#   Refactor-1: summarize_behavior.R - Vectorized RT Centering
+#   Did this refactoring as it made it easier for me to read. Instead of 4 lines, i wanted 1, 2 max, lines
+#   
+#   Refactor-2: summarize_behavior.R - Named Column
+#   Instead of using numbers, i just thought using labels like rt_min and rt_max would be easier to read
+#   
+#   Refactor-3: build_participant_wide.R - Replace For Loop with lapply
+#   found the for loop a bit too much, so i wanted to vectorise it to make it easier for myself to read, AI reccomended the list apply lapply. It will return the results as a list instead.
+#   
+#   
+# + A list or short set of bullet points showing the optimization ideas the AI gave for the unedited project.
+# 
+# Column name mismatch in import_and_process.R: Used questionnaire_df$responses instead of questionnaire_df$response 
+# 
+# Column name typos: Raw data had trial_type but code expected trialType
+# 
+# Column name typos: Raw data had expectedCategoryDisplayed but code expected expectedCategoryAsDisplayed
+#   
+# + A list or short set of bullet points showing the optimization ideas the AI gave for your refactored version.
+# Add more robust error handling:
+# 
+# Check if outputs/plots directory exists before saving
+# Validate that required columns exist in raw data files
+# Add try-catch blocks around file operations
+# 
+# Improve code documentation:
+# 
+# Add more detailed function headers explaining inputs/outputs
+# Document expected data structures more clearly
+# Add inline comments explaining complex operations
+# Improve variable naming:
+# 
+# Some variables like grp_rt and grp_acc could be more descriptive
+# Consider more meaningful names for intermediate objects
+# 
+# 
+# Then write a comparison section:
+# Discuss where your own changes matched the AI’s ideas, where you differed, and what you learned from the comparison.
+# The changes of the bugs matched AI which was a relief because It took me a while to get all 7 of the bugs especially the ones with the little syntax errors. Gemini mentioned for the rt_min and max refactoring something different in terms of structure but i felt mine was easier to read. Gemini did say that names like grp_rt and grp_acc could be more discriptive which makes sense since it will be easier to read.
+
+```
+
+
+
+
+
+
+
+
